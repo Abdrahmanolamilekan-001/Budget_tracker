@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body >
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <a id="budget" class="navbar-brand">
+        <div class="d-flex gap-2 mx-5">
+          <h1 class="text1">Result goes </h1>
+          <h1 class="text2">here in card</h1>
+        </div>
+      </a>
+      <form class="d-flex gap-2" role="search">
+        <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
+        <div id="result" ></div>
+        <a class="btn" href="/">BACK</a>
+      </form>
+    </div>
+  </nav>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="productName" class="col-form-label">Product:</label>
+              <input type="text" class="form-control" id="productName">
+            </div>
+            <div class="mb-3">
+              <label for="quantity" class="col-form-label">Quantity</label>
+              <input type="text" class="form-control" id="quantity">
+            </div>
+            <div class="mb-3">
+              <label for="price" class="col-form-label">Price</label>
+              <input type="text" class="form-control" id="price">
+            </div>
+            
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="Edit()" class="btn btn-primary">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+
+  <div class="row gap justify-content-space-evenly" id="resultCard"></div>
+
+
+  
+
+
+<script>
+ var budgetArray = JSON.parse(localStorage.getItem("budget"));
+ console.log(budgetArray);
+  let indexToEditGlobal
+ if (budgetArray && budgetArray.length > 0) {
+      // var resultCard = document.getElementById("resultCard");
+      var totalSpent = 0 
+      for (var i = 0; i < budgetArray.length; i++) {
+        var item = budgetArray[i];
+        var itemCost = item.quant * item.prices;
+        totalSpent += itemCost;
+        resultCard.innerHTML += ` 
+            <div class="col ">
+              <div class="box">
+                <div class="content">
+                  <p> product name: ${item.pName} </p>
+                  <p> Quantity: ${item.quant} </p>
+                  <p> price: ${item.prices} </p>
+                  <br>
+                  <p> total = ${itemCost}</p>
+                  <div class="d-flex gap-2">
+                    <Button onclick="Delete(${i})" class='button1'>Delete</Button>
+                    <button type="button" onclick="setItemsToEdit(${i})"  class='button2' data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>`
+            result.innerHTML= `<p> Total Spent: $${totalSpent.toFixed(2)}</p>`
+          }
+        }
+
+
+    function Delete(indexToDelete){
+       var budgetArray = JSON.parse(localStorage.getItem("budget"));
+  
+          budgetArray.splice(indexToDelete, 1)
+          localStorage.setItem("budget", JSON.stringify(budgetArray))
+          console.log("succesful  delete");
+          window.location.href = "result.html"
+          
+    }
+        
+    function setItemsToEdit(indexToEdit){
+      indexToEditGlobal = indexToEdit
+      productName.value =budgetArray[indexToEdit].pName
+      quantity.value =budgetArray[ indexToEdit].quant
+      price.value =budgetArray[indexToEdit].prices
+    }
+
+    function Edit(){
+
+        // var userInput =prompt("what number did you want to edit");
+        // var newvalue =prompt("what is you new value");
+        const editedBudget = {
+          pName: productName.value,
+          quant: quantity.value,
+          prices: price.value
+        }
+        budgetArray[indexToEditGlobal]=editedBudget;
+        localStorage.setItem("budget", JSON.stringify(budgetArray))
+          console.log("succesful  Edit");
+          window.location.href = "result.html"
+          addTo()
+    }
+    
+  </script>
+</body>
+</html>
